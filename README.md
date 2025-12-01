@@ -1,7 +1,5 @@
 # Pismo Home Assignment
 
-This project implements the Pismo backend coding assignment. It provides REST APIs to create accounts and register financial transactions while applying the required debit/credit rules.
-
 ## Technologies
 
 - Java 17
