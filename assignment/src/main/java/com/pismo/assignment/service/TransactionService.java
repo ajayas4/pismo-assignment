@@ -4,6 +4,7 @@ import com.pismo.assignment.constant.AppConstants;
 import com.pismo.assignment.dto.TransactionDto;
 import com.pismo.assignment.entity.OperationType;
 import com.pismo.assignment.entity.Transaction;
+import com.pismo.assignment.enums.OperationTypeEnum;
 import com.pismo.assignment.exception.InternalServerException;
 import com.pismo.assignment.exception.ResourceConflictException;
 import com.pismo.assignment.exception.ResourceNotFoundException;
@@ -50,7 +51,7 @@ public class TransactionService {
 
     public TransactionDto save(TransactionDto dto){
         validateTransactionType(dto.transactionType());
-        dto=applyDebitorCredit(dto);
+        dto=applyDebitOrCredit(dto);
         Transaction transaction=dtoConverter.dtoToTransaction(dto).orElseThrow(()-> new InternalServerException(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
         transaction.setOperationType(operationTypeMap.get(dto.transactionType()));
@@ -60,7 +61,7 @@ public class TransactionService {
 
     public List<TransactionDto> findAll(int page,int size,Sort sort){
         Pageable pageable= PageRequest.of(page, size,sort);
-        return dtoConverter.transactionListToDtoList(transactionRepository.findAll(pageable).toList()).orElse(null);
+        return dtoConverter.transactionListToDtoList(transactionRepository.findAll(pageable).toList()).orElse(List.of());
     }
 
     public List<TransactionDto> findByAccount(Long accountId, int page, int size, Sort sort){
@@ -75,14 +76,18 @@ public class TransactionService {
         if(operationTypeMap==null || operationTypeMap.isEmpty()){
             throw new ResourceConflictException(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.getReasonPhrase());
         }
-        if(operationTypeMap.get(id)==null){
-            throw new ResourceConflictException(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.getReasonPhrase());
+        OperationType type = operationTypeMap.get(id);
+        if(type == null) {
+            throw new ResourceConflictException(HttpStatus.CONFLICT.value(),"Invalid operation type");
         }
+
     }
-    private TransactionDto applyDebitorCredit(TransactionDto dto){
-        if(AppConstants.debitTransactionTypes.contains(dto.transactionType())){
+    private TransactionDto applyDebitOrCredit(TransactionDto dto){
+        OperationType operationType=operationTypeMap.get(dto.transactionType());
+        OperationTypeEnum operationTypeEnum=operationType.getCode();
+        if(operationTypeEnum.isDebit()){
             return new TransactionDto(dto.transactionId(), dto.accountId(),
-                    dto.transactionType(),dto.amount().multiply(new BigDecimal(-1)),dto.eventDate());
+                    dto.transactionType(),dto.amount().negate(),dto.eventDate());
         }
         return dto;
     }

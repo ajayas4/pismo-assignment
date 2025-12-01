@@ -17,7 +17,7 @@ public class Account {
     private Long accountId;
 
     @Column(name="document_number")
-    private Long documentNumber;
+    private String documentNumber;
 
 
 

@@ -38,8 +38,8 @@ public class TestAccountService {
 
     @Test
     public void test_save_success(){
-        AccountDTO dto=new AccountDTO(null,1l);
-        Account accountAfter=new Account(1l,1l);
+        AccountDTO dto=new AccountDTO(null,"1");
+        Account accountAfter=new Account(1l,"1");
         Mockito.when(accountRepository.save(any(Account.class))).thenReturn(accountAfter);
 
         AccountDTO savedAccount= accountService.save(dto);
@@ -51,8 +51,8 @@ public class TestAccountService {
 
     @Test
     public void test_save_fail(){
-        AccountDTO dto=new AccountDTO(null,1l);
-        Account accountAfter=new Account(1l,1l);
+        AccountDTO dto=new AccountDTO(null,"1");
+        Account accountAfter=new Account(1l,"1");
         Mockito.when(accountRepository.save(any(Account.class))).thenReturn(null);
 
         InternalServerException ex=Assertions.assertThrows(InternalServerException.class,
@@ -63,9 +63,9 @@ public class TestAccountService {
 
     @Test
     public void test_find_all_success(){
-        Account account1=new Account(1l,3l);
-        Account account2=new Account(2l,2l);
-        Account account3=new Account(3l,1l);
+        Account account1=new Account(1l,"3");
+        Account account2=new Account(2l,"2");
+        Account account3=new Account(3l,"1");
         Pageable pageable= PageRequest.of(0,3, Sort.by("accountId").descending());
         Page<Account> page=new PageImpl<>(List.of(account1,account2,account3));
         Mockito.when(accountRepository.findAll(any(Pageable.class))).thenReturn(page);

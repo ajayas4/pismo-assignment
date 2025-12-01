@@ -4,6 +4,7 @@ import com.pismo.assignment.dto.TransactionDto;
 import com.pismo.assignment.entity.Account;
 import com.pismo.assignment.entity.OperationType;
 import com.pismo.assignment.entity.Transaction;
+import com.pismo.assignment.enums.OperationTypeEnum;
 import com.pismo.assignment.exception.InternalServerException;
 import com.pismo.assignment.repository.OperationTypeRepository;
 import com.pismo.assignment.repository.TransactionRepository;
@@ -47,10 +48,10 @@ public class TestTransactionService {
     @BeforeEach
     public  void init(){
 
-        OperationType op1=new OperationType(1l,"CASH_PURCHASE","CASH PURCHASE");
-        OperationType op2=new OperationType(2l,"INSTALLMENT_PURCHASE","INSTALLMENT PURCHASE");
-        OperationType op3=new OperationType(3l,"WITHDRAWAL","WITHDRAWAL");
-        OperationType op4=new OperationType(4l,"PAYMENT","PAYMENT");
+        OperationType op1=new OperationType(1l, OperationTypeEnum.CASH_PURCHASE,"CASH PURCHASE");
+        OperationType op2=new OperationType(2l,OperationTypeEnum.INSTALLMENT_PURCHASE,"INSTALLMENT PURCHASE");
+        OperationType op3=new OperationType(3l,OperationTypeEnum.WITHDRAWAL,"WITHDRAWAL");
+        OperationType op4=new OperationType(4l,OperationTypeEnum.PAYMENT,"PAYMENT");
         Mockito.when(operationTypeRepository.findAll()).thenReturn(List.of(op1,op2,op3,op4));
         transactionService.init();
     }
@@ -58,7 +59,7 @@ public class TestTransactionService {
 
     @Test
     public void test_save_transaction_success(){
-        OperationType op1=new OperationType(1l,"CASH_PURCHASE","CASH PURCHASE");
+        OperationType op1=new OperationType(1l,OperationTypeEnum.CASH_PURCHASE,"CASH PURCHASE");
         Transaction transaction=new Transaction(1l,1l,
                 op1,new BigDecimal("-100.23"), LocalDateTime.now());
         Mockito.when(transactionRepository.save(any(Transaction.class))).thenReturn(transaction);
@@ -71,7 +72,7 @@ public class TestTransactionService {
 
     @Test
     public void test_save_transaction_fail(){
-        OperationType op1=new OperationType(1l,"CASH_PURCHASE","CASH PURCHASE");
+        OperationType op1=new OperationType(1l,OperationTypeEnum.CASH_PURCHASE,"CASH PURCHASE");
         Transaction transaction=new Transaction(1l,1l,
                 op1,new BigDecimal(100.00), LocalDateTime.now());
         Mockito.when(transactionRepository.save(any(Transaction.class))).thenReturn(null);
@@ -82,7 +83,7 @@ public class TestTransactionService {
 
     @Test
     public void test_find_all_success(){
-        OperationType op1=new OperationType(1l,"CASH_PURCHASE","CASH_PURCHASE");
+        OperationType op1=new OperationType(1l,OperationTypeEnum.CASH_PURCHASE,"CASH_PURCHASE");
         Transaction transaction1=new Transaction(1l,1l,
                 op1,new BigDecimal(-100.00), LocalDateTime.now());
 

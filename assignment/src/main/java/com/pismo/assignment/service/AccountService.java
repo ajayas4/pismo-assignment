@@ -38,7 +38,7 @@ public class AccountService {
 
     public List<AccountDTO> findAll(int page, int size, Sort sort){
         Pageable pageable= PageRequest.of(page,size,sort);
-        return dtoConverter.accountListToDtoList(accountRepository.findAll(pageable).toList()).orElse(null);
+        return dtoConverter.accountListToDtoList(accountRepository.findAll(pageable).toList()).orElse(List.of());
     }
 
     public AccountDTO findById(Long accountId){

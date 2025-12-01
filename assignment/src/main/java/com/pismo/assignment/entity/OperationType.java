@@ -1,5 +1,6 @@
 package com.pismo.assignment.entity;
 
+import com.pismo.assignment.enums.OperationTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,9 @@ public class OperationType {
     @Column(name="operation_type_id")
     private Long operationTypeId;
 
-    private String code;
+
+    @Enumerated(EnumType.STRING)
+    private OperationTypeEnum code;
     private String description;
 
 
